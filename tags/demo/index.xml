@@ -1,47 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>demo on Hugo Hermit</title>
+    <title>Demo on Hugo Hermit</title>
     <link>https://forever-crazy.github.io/tags/demo/</link>
-    <description>Recent content in demo on Hugo Hermit</description>
+    <description>Recent content in Demo on Hugo Hermit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 24 Dec 2018 12:29:41 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 23 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://forever-crazy.github.io/tags/demo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>The &#34;figure&#34; Shortcode</title>
-      <link>https://forever-crazy.github.io/posts/the-figure-shortcode/</link>
-      <pubDate>Mon, 24 Dec 2018 12:29:41 +0800</pubDate>
+      <title>Week-0 从零开始</title>
+      <link>https://forever-crazy.github.io/posts/week-0/</link>
+      <pubDate>Mon, 23 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://forever-crazy.github.io/posts/the-figure-shortcode/</guid>
-      <description>Hugo has figure shortcode built in, so you can easily add figcaptions or hyperlink rel attributes to images. Documentations can be found here:
-https://gohugo.io/content-management/shortcodes/#figure
-This theme has 3 CSS classes made for figure elements:
- big: images will break the width limit of main content area. left: images will float to the left. right: images will float to the right.  If a figure has no class set, the image will behave just like a normal markdown image: !</description>
-    </item>
-    
-    <item>
-      <title>Post With Featured Image</title>
-      <link>https://forever-crazy.github.io/posts/post-with-featured-image/</link>
-      <pubDate>Mon, 01 Oct 2018 16:15:09 +0800</pubDate>
-      
-      <guid>https://forever-crazy.github.io/posts/post-with-featured-image/</guid>
-      <description>Just define the image URL in the content’s front matter, the featured image will be displayed as the background.
-For example:
----images:-https://picsum.photos/1024/768/?random--- This is an array, you can set multiple urls, only the first url will be used. These images is also used in Twitter Cards and the Open Graph metadata.</description>
-    </item>
-    
-    <item>
-      <title>Typography</title>
-      <link>https://forever-crazy.github.io/posts/typography/</link>
-      <pubDate>Sat, 29 Sep 2018 11:36:33 +0800</pubDate>
-      
-      <guid>https://forever-crazy.github.io/posts/typography/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</description>
+      <guid>https://forever-crazy.github.io/posts/week-0/</guid>
+      <description>其实很早就有写博客的想法，但到真正下笔时却总是被我以各种理由开脱，理由也不外乎两个：一是总觉得自己水平太低，脑子里没货，实在想不出写什么；二是碍于贫乏的词汇量和表达能力，我总是无法准确清楚地表达出自己的想法和理解。(好吧，或许还是因为我太懒qwq
+就这样，磨蹭了很久，直到今天终于下定决心开始写博客，去养成一个好的习惯，也不管写什么，反正只要能写出东西就可以。当然咯，我毕竟还太菜，写出来的东西水平或许还太低，不过没关系，从零开始，每次写一点点，每次进步一点点，量变终究会引起质变。
+Come on!!!</description>
     </item>
     
   </channel>
