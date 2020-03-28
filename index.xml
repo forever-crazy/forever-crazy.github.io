@@ -6,11 +6,23 @@
     <description>Recent content on Hugo Hermit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Mon, 23 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://forever-crazy.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About Me</title>
+      <link>https://forever-crazy.github.io/about-hugo/</link>
+      <pubDate>Mon, 23 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://forever-crazy.github.io/about-hugo/</guid>
+      <description>菜鸡一枚，现就读于杭州一不知名高校，计算机专业。
+性格内向，不喜欢热闹，在生人面前比较腼腆，在熟人面前会放飞自我。
+平常喜欢打LOL，偶尔玩csgo，但水平实在让人不敢恭维（好歹也玩了这么多年，还这么菜qwq
+喜欢看宫崎骏的电影，其中最喜欢《龙猫》和《魔女宅急便》，每次看时自己都会沉浸到那个淳朴美好的世界中，压抑的心情好了不少。
+进大学这么久了，感觉啥都没学到，啥都不会，白白荒废了这么久的时间，终于下定决心好好学习（希望不是真香233&amp;hellip;</description>
+    </item>
     
     <item>
       <title>Week-0 从零开始</title>
@@ -35,17 +47,6 @@ More complete instructions are available at Install Hugo
 Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
 Follow the following steps:
  Clone the Hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
-    </item>
-    
-    <item>
-      <title>About Hugo</title>
-      <link>https://forever-crazy.github.io/about-hugo/</link>
-      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>https://forever-crazy.github.io/about-hugo/</guid>
-      <description>Hugo is the world’s fastest framework for building websites. It is written in Go.
-It makes use of a variety of open source projects including:
- https://github.com/russross/blackfriday https://github.com/alecthomas/chroma https://github.com/muesli/smartcrop https://github.com/spf13/cobra https://github.com/spf13/viper  Learn more and contribute on GitHub.</description>
     </item>
     
   </channel>
