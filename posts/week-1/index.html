@@ -1,23 +1,88 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>Posts on Hugo Hermit</title>
-		<link>https://forever-crazy.github.io/posts/</link>
-		<description>Recent content in Posts on Hugo Hermit</description>
-		<generator>Hugo -- gohugo.io</generator>
-		<language>en-us</language>
-		<lastBuildDate>Sun, 05 Apr 2020 10:42:49 +0800</lastBuildDate>
-		<atom:link href="https://forever-crazy.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-		
-		<item>
-			<title>Week-1 mnist手写数字识别</title>
-			<link>https://forever-crazy.github.io/posts/week-1/</link>
-			<pubDate>Sun, 05 Apr 2020 10:42:49 +0800</pubDate>
-			
-			<guid>https://forever-crazy.github.io/posts/week-1/</guid>
-			<description>实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+
+<meta itemprop="name" content="Week-1 mnist手写数字识别">
+<meta itemprop="description" content="实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。
 在这里采用了正态分布来初始化权重值，使用sigmoid函数当激活函数。
-import scipy.special import pandas as pd import numpy as np class NeutralNetwork(): def __init__(self,inputnumber, hidenumber, outnumber, learningrate): self.inum = inputnumber self.hnum = hidenumber self.onum = outnumber self.lr = learningrate # np.random.normal(loc=0.0, scale=1.0, size=None) loc-均值, scale-标准差, size-输出数组的维度 self.inputweight = np.random.normal(0.0, pow(self.hnum, -0.5), (self.hnum, self.inum)) self.hideweight = np.random.normal(0.0, pow(self.onum, -0.5), (self.onum, self.hnum)) self.activation_function = lambda x : scipy.special.expit(x) # sigmoid函数 def train(self, inputlist, outputlist): inlist = np.array(inputlist).reshape(-1, 1) oulist = np.</description>
-			<content type="html"><![CDATA[<p>实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。</p>
+import scipy.special import pandas as pd import numpy as np class NeutralNetwork(): def __init__(self,inputnumber, hidenumber, outnumber, learningrate): self.inum = inputnumber self.hnum = hidenumber self.onum = outnumber self.lr = learningrate # np.random.normal(loc=0.0, scale=1.0, size=None) loc-均值, scale-标准差, size-输出数组的维度 self.inputweight = np.random.normal(0.0, pow(self.hnum, -0.5), (self.hnum, self.inum)) self.hideweight = np.random.normal(0.0, pow(self.onum, -0.5), (self.onum, self.hnum)) self.activation_function = lambda x : scipy.special.expit(x) # sigmoid函数 def train(self, inputlist, outputlist): inlist = np.array(inputlist).reshape(-1, 1) oulist = np.">
+
+
+<meta itemprop="datePublished" content="2020-04-05T10:42:49&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-05T10:42:49&#43;08:00" />
+<meta itemprop="wordCount" content="287">
+
+
+
+<meta itemprop="keywords" content="Demo," />
+<meta property="og:title" content="Week-1 mnist手写数字识别" />
+<meta property="og:description" content="实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。
+在这里采用了正态分布来初始化权重值，使用sigmoid函数当激活函数。
+import scipy.special import pandas as pd import numpy as np class NeutralNetwork(): def __init__(self,inputnumber, hidenumber, outnumber, learningrate): self.inum = inputnumber self.hnum = hidenumber self.onum = outnumber self.lr = learningrate # np.random.normal(loc=0.0, scale=1.0, size=None) loc-均值, scale-标准差, size-输出数组的维度 self.inputweight = np.random.normal(0.0, pow(self.hnum, -0.5), (self.hnum, self.inum)) self.hideweight = np.random.normal(0.0, pow(self.onum, -0.5), (self.onum, self.hnum)) self.activation_function = lambda x : scipy.special.expit(x) # sigmoid函数 def train(self, inputlist, outputlist): inlist = np.array(inputlist).reshape(-1, 1) oulist = np." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://forever-crazy.github.io/posts/week-1/" />
+<meta property="article:published_time" content="2020-04-05T10:42:49&#43;08:00"/>
+<meta property="article:modified_time" content="2020-04-05T10:42:49&#43;08:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Week-1 mnist手写数字识别"/>
+<meta name="twitter:description" content="实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。
+在这里采用了正态分布来初始化权重值，使用sigmoid函数当激活函数。
+import scipy.special import pandas as pd import numpy as np class NeutralNetwork(): def __init__(self,inputnumber, hidenumber, outnumber, learningrate): self.inum = inputnumber self.hnum = hidenumber self.onum = outnumber self.lr = learningrate # np.random.normal(loc=0.0, scale=1.0, size=None) loc-均值, scale-标准差, size-输出数组的维度 self.inputweight = np.random.normal(0.0, pow(self.hnum, -0.5), (self.hnum, self.inum)) self.hideweight = np.random.normal(0.0, pow(self.onum, -0.5), (self.onum, self.hnum)) self.activation_function = lambda x : scipy.special.expit(x) # sigmoid函数 def train(self, inputlist, outputlist): inlist = np.array(inputlist).reshape(-1, 1) oulist = np."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Week-1 mnist手写数字识别</title>
+	<link rel="stylesheet" href="https://forever-crazy.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://forever-crazy.github.io">Hugo Hermit</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://forever-crazy.github.io/posts/">Posts</a>
+				<a href="https://forever-crazy.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/forever-crazy/forever-crazy.github.io" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://forever-crazy.github.io/posts/">Posts</a></li>
+			<li><a href="https://forever-crazy.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 5, 2020</span></div>
+				<h1>Week-1 mnist手写数字识别</h1>
+			</header>
+			<div class="content">
+				<p>实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。</p>
 
 <p>在这里采用了正态分布来初始化权重值，使用sigmoid函数当激活函数。</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">scipy.special</span>
@@ -97,118 +162,38 @@ import scipy.special import pandas as pd import numpy as np class NeutralNetwork
     <span class="n">true_samples</span> <span class="o">+=</span> <span class="mi">1</span>
 
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">true_samples</span> <span class="o">/</span> <span class="n">test_samples</span>       <span class="c1">#正确率</span>
-<span class="k">print</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span></code></pre></div>]]></content>
-		</item>
-		
-		<item>
-			<title>Week-0 从零开始</title>
-			<link>https://forever-crazy.github.io/posts/week-0/</link>
-			<pubDate>Mon, 23 Mar 2020 00:00:00 +0000</pubDate>
-			
-			<guid>https://forever-crazy.github.io/posts/week-0/</guid>
-			<description>​ 其实很早就有写博客的想法，但到真正下笔时却总是被我以各种理由开脱，理由也不外乎两个：一是总觉得自己水平太低，脑子里没货，实在想不出写什么；二是碍于贫乏的词汇量和表达能力，我总是无法准确清楚地表达出自己的想法和理解。(好吧，或许还是因为我太懒qwq
-​ 就这样，磨蹭了很久，直到今天终于下定决心开始写博客，去养成一个好的习惯，也不管写什么，反正只要能写出东西就可以。当然咯，我毕竟还太菜，写出来的东西水平或许还太低，不过没关系，从零开始，每次写一点点，每次进步一点点，量变终究会引起质变。
-Come on!!!</description>
-			<content type="html"><![CDATA[<p>​    其实很早就有写博客的想法，但到真正下笔时却总是被我以各种理由开脱，理由也不外乎两个：一是总觉得自己水平太低，脑子里没货，实在想不出写什么；二是碍于贫乏的词汇量和表达能力，我总是无法准确清楚地表达出自己的想法和理解。(好吧，或许还是因为我太懒qwq</p>
+<span class="k">print</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span></code></pre></div>
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://forever-crazy.github.io/tags/demo">Demo</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>287 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-05 10:42 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://forever-crazy.github.io/posts/week-0/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Week-0 从零开始</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
 
-<p>​    就这样，磨蹭了很久，直到今天终于下定决心开始写博客，去养成一个好的习惯，也不管写什么，反正只要能写出东西就可以。当然咯，我毕竟还太菜，写出来的东西水平或许还太低，不过没关系，从零开始，每次写一点点，每次进步一点点，量变终究会引起质变。</p>
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2020 <a href="https://forever-crazy.github.io">Jiujiu</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://forever-crazy.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
 
-<p>Come on!!!</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>Getting Started with Hugo</title>
-			<link>https://forever-crazy.github.io/posts/getting-started-with-hugo/</link>
-			<pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-			
-			<guid>https://forever-crazy.github.io/posts/getting-started-with-hugo/</guid>
-			<description>Step 1. Install Hugo Go to Hugo releases and download the appropriate version for your OS and architecture.
-Save it somewhere specific as we will be using it in the next step.
-More complete instructions are available at Install Hugo
-Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
-Follow the following steps:
- Clone the Hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
-			<content type="html"><![CDATA[
 
-<h2 id="step-1-install-hugo">Step 1. Install Hugo</h2>
 
-<p>Go to <a href="https://github.com/spf13/hugo/releases">Hugo releases</a> and download the
-appropriate version for your OS and architecture.</p>
+	<script src="https://forever-crazy.github.io/js/bundle.min.490e43e5af6db5906f28afa49a4e16bf9f626b758e3fca92f146b870eb94bb37.js" integrity="sha256-SQ5D5a9ttZBvKK+kmk4Wv59ia3WOP8qS8Ua4cOuUuzc=" crossorigin="anonymous"></script>
+	
 
-<p>Save it somewhere specific as we will be using it in the next step.</p>
+</body>
 
-<p>More complete instructions are available at <a href="https://gohugo.io/getting-started/installing/">Install Hugo</a></p>
-
-<h2 id="step-2-build-the-docs">Step 2. Build the Docs</h2>
-
-<p>Hugo has its own example site which happens to also be the documentation site
-you are reading right now.</p>
-
-<p>Follow the following steps:</p>
-
-<ol>
-<li>Clone the <a href="http://github.com/spf13/hugo">Hugo repository</a></li>
-<li>Go into the repo</li>
-<li>Run hugo in server mode and build the docs</li>
-<li>Open your browser to <a href="http://localhost:1313">http://localhost:1313</a></li>
-</ol>
-
-<p>Corresponding pseudo commands:</p>
-
-<pre><code>git clone https://github.com/spf13/hugo
-cd hugo
-/path/to/where/you/installed/hugo server --source=./docs
-&gt; 29 pages created
-&gt; 0 tags index created
-&gt; in 27 ms
-&gt; Web Server is available at http://localhost:1313
-&gt; Press ctrl+c to stop
-</code></pre>
-
-<p>Once you&rsquo;ve gotten here, follow along the rest of this page on your local build.</p>
-
-<h2 id="step-3-change-the-docs-site">Step 3. Change the docs site</h2>
-
-<p>Stop the Hugo process by hitting Ctrl+C.</p>
-
-<p>Now we are going to run hugo again, but this time with hugo in watch mode.</p>
-
-<pre><code>/path/to/hugo/from/step/1/hugo server --source=./docs --watch
-&gt; 29 pages created
-&gt; 0 tags index created
-&gt; in 27 ms
-&gt; Web Server is available at http://localhost:1313
-&gt; Watching for changes in /Users/spf13/Code/hugo/docs/content
-&gt; Press ctrl+c to stop
-</code></pre>
-
-<p>Open your <a href="http://vim.spf13.com">favorite editor</a> and change one of the source
-content pages. How about changing this very file to <em>fix the typo</em>. How about changing this very file to <em>fix the typo</em>.</p>
-
-<p>Content files are found in <code>docs/content/</code>. Unless otherwise specified, files
-are located at the same relative location as the url, in our case
-<code>docs/content/overview/quickstart.md</code>.</p>
-
-<p>Change and save this file.. Notice what happened in your terminal.</p>
-
-<pre><code>&gt; Change detected, rebuilding site
-
-&gt; 29 pages created
-&gt; 0 tags index created
-&gt; in 26 ms
-</code></pre>
-
-<p>Refresh the browser and observe that the typo is now fixed.</p>
-
-<p>Notice how quick that was. Try to refresh the site before it&rsquo;s finished building. I double dare you.
-Having nearly instant feedback enables you to have your creativity flow without waiting for long builds.</p>
-
-<h2 id="step-4-have-fun">Step 4. Have fun</h2>
-
-<p>The best way to learn something is to play with it.</p>
-]]></content>
-		</item>
-		
-	</channel>
-</rss>
+</html>

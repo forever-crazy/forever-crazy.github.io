@@ -6,10 +6,21 @@
     <description>Recent content on Hugo Hermit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2020 10:42:49 +0800</lastBuildDate>
     
 	<atom:link href="https://forever-crazy.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Week-1 mnist手写数字识别</title>
+      <link>https://forever-crazy.github.io/posts/week-1/</link>
+      <pubDate>Sun, 05 Apr 2020 10:42:49 +0800</pubDate>
+      
+      <guid>https://forever-crazy.github.io/posts/week-1/</guid>
+      <description>实现了一个简单的mnist手写数字识别的3层神经网络，没什么技术含量。
+在这里采用了正态分布来初始化权重值，使用sigmoid函数当激活函数。
+import scipy.special import pandas as pd import numpy as np class NeutralNetwork(): def __init__(self,inputnumber, hidenumber, outnumber, learningrate): self.inum = inputnumber self.hnum = hidenumber self.onum = outnumber self.lr = learningrate # np.random.normal(loc=0.0, scale=1.0, size=None) loc-均值, scale-标准差, size-输出数组的维度 self.inputweight = np.random.normal(0.0, pow(self.hnum, -0.5), (self.hnum, self.inum)) self.hideweight = np.random.normal(0.0, pow(self.onum, -0.5), (self.onum, self.hnum)) self.activation_function = lambda x : scipy.special.expit(x) # sigmoid函数 def train(self, inputlist, outputlist): inlist = np.array(inputlist).reshape(-1, 1) oulist = np.</description>
+    </item>
     
     <item>
       <title>About Me</title>
