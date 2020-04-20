@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+
+<meta itemprop="name" content="Week-3 Linux内核编译">
+<meta itemprop="description" content="1.解压内核源码文件  在Linux官网下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。 进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩： （1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。 （2）tar –xvf linux-4.4.218.tar 注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。  2.清除残留的.config和.o文件  在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令： #make mrproper 这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是： #apt-get install libncurses5-dev 安装完缺少的包之后再次执行命令： #make mrproper  3.配置内核  执行命令： #make menuconfig 运行该命令过程中，可能会出现错误信息： fatal error: curses.h: No such file or directory。 执行命令安装套件 ncurses devel： #apt-get install libncurses5-dev 在之后出现的对话框中选择 save，再 exit 退出。  4.编译内核  执行命令(可使用 make -j4 (4核CPU)来加快编译速度)： #make -j4 内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于.">
+
+
+<meta itemprop="datePublished" content="2020-04-18T17:00:18&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-18T17:00:18&#43;08:00" />
+<meta itemprop="wordCount" content="116">
+
+
+
+<meta itemprop="keywords" content="demo," />
+<meta property="og:title" content="Week-3 Linux内核编译" />
+<meta property="og:description" content="1.解压内核源码文件  在Linux官网下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。 进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩： （1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。 （2）tar –xvf linux-4.4.218.tar 注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。  2.清除残留的.config和.o文件  在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令： #make mrproper 这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是： #apt-get install libncurses5-dev 安装完缺少的包之后再次执行命令： #make mrproper  3.配置内核  执行命令： #make menuconfig 运行该命令过程中，可能会出现错误信息： fatal error: curses.h: No such file or directory。 执行命令安装套件 ncurses devel： #apt-get install libncurses5-dev 在之后出现的对话框中选择 save，再 exit 退出。  4.编译内核  执行命令(可使用 make -j4 (4核CPU)来加快编译速度)： #make -j4 内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://forever-crazy.github.io/posts/week-3/" />
+<meta property="article:published_time" content="2020-04-18T17:00:18&#43;08:00"/>
+<meta property="article:modified_time" content="2020-04-18T17:00:18&#43;08:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Week-3 Linux内核编译"/>
+<meta name="twitter:description" content="1.解压内核源码文件  在Linux官网下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。 进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩： （1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。 （2）tar –xvf linux-4.4.218.tar 注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。  2.清除残留的.config和.o文件  在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令： #make mrproper 这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是： #apt-get install libncurses5-dev 安装完缺少的包之后再次执行命令： #make mrproper  3.配置内核  执行命令： #make menuconfig 运行该命令过程中，可能会出现错误信息： fatal error: curses.h: No such file or directory。 执行命令安装套件 ncurses devel： #apt-get install libncurses5-dev 在之后出现的对话框中选择 save，再 exit 退出。  4.编译内核  执行命令(可使用 make -j4 (4核CPU)来加快编译速度)： #make -j4 内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Week-3 Linux内核编译</title>
+	<link rel="stylesheet" href="https://forever-crazy.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://forever-crazy.github.io">Hugo Hermit</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://forever-crazy.github.io/posts/">Posts</a>
+				<a href="https://forever-crazy.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/forever-crazy/forever-crazy.github.io" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://forever-crazy.github.io/posts/">Posts</a></li>
+			<li><a href="https://forever-crazy.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 18, 2020</span></div>
+				<h1>Week-3 Linux内核编译</h1>
+			</header>
+			<div class="content">
+				
+
+<h3 id="1-解压内核源码文件">1.解压内核源码文件<a href="#1-解压内核源码文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="在-linux官网-https-www-kernel-org-下载内核源代码-在这里可以找到所有的内核版本-我下载的是4-4-218版本-我是先在windows上下载好后通过虚拟机共享文件夹传到虚拟机中-传过来的共享文件会在-mnt-hgfs目录下">在<a href="https://www.kernel.org">Linux官网</a>下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。<a href="#在-linux官网-https-www-kernel-org-下载内核源代码-在这里可以找到所有的内核版本-我下载的是4-4-218版本-我是先在windows上下载好后通过虚拟机共享文件夹传到虚拟机中-传过来的共享文件会在-mnt-hgfs目录下" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="进入虚拟机中-将下载的内核压缩文件复制到-home-或其他比较空闲的目录中-然后进入压缩文件所在子目录-分两步解压缩">进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩：<a href="#进入虚拟机中-将下载的内核压缩文件复制到-home-或其他比较空闲的目录中-然后进入压缩文件所在子目录-分两步解压缩" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="1-xz-d-linux-4-4-218-tar-xz-大概执行-1-分钟左右-中间没有任何信息显示">（1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。<a href="#1-xz-d-linux-4-4-218-tar-xz-大概执行-1-分钟左右-中间没有任何信息显示" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-tar-xvf-linux-4-4-218-tar">（2）tar –xvf linux-4.4.218.tar<a href="#2-tar-xvf-linux-4-4-218-tar" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="注意-由于编译过程中会生成很多临时文件-所以要确保压缩文件所在子目录有足够的空闲空间-最好能有-15-20gb-我在建立虚拟机时预留了-40gb-磁盘空间">注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。<a href="#注意-由于编译过程中会生成很多临时文件-所以要确保压缩文件所在子目录有足够的空闲空间-最好能有-15-20gb-我在建立虚拟机时预留了-40gb-磁盘空间" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="2-清除残留的-config和-o文件">2.清除残留的.config和.o文件<a href="#2-清除残留的-config和-o文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="在开始完全重新编译之前-需要删除所有的编译生成文件-o文件-内核配置文件-config文件-和各种备份文件-后续如果编译过程中出现错误-再次开始完全重新编译之前也需要如此清理-进入-linux-4-4-218-目录-执行以下命令">在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令：<a href="#在开始完全重新编译之前-需要删除所有的编译生成文件-o文件-内核配置文件-config文件-和各种备份文件-后续如果编译过程中出现错误-再次开始完全重新编译之前也需要如此清理-进入-linux-4-4-218-目录-执行以下命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-mrproper">#make mrproper<a href="#make-mrproper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="这里可能会提醒安装-ncurses-包-在-ubuntu-中-ncurses-库的名字是-libncurses5-dev-所以安装命令是">这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是：<a href="#这里可能会提醒安装-ncurses-包-在-ubuntu-中-ncurses-库的名字是-libncurses5-dev-所以安装命令是" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-libncurses5-dev">#apt-get install libncurses5-dev<a href="#apt-get-install-libncurses5-dev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="安装完缺少的包之后再次执行命令">安装完缺少的包之后再次执行命令：<a href="#安装完缺少的包之后再次执行命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-mrproper-1">#make mrproper<a href="#make-mrproper-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="3-配置内核">3.配置内核<a href="#3-配置内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="执行命令">执行命令：<a href="#执行命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-menuconfig">#make menuconfig<a href="#make-menuconfig" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="运行该命令过程中-可能会出现错误信息">运行该命令过程中，可能会出现错误信息：<a href="#运行该命令过程中-可能会出现错误信息" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="fatal-error-curses-h-no-such-file-or-directory">fatal error: curses.h: No such file or directory。<a href="#fatal-error-curses-h-no-such-file-or-directory" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="执行命令安装套件-ncurses-devel">执行命令安装套件 ncurses devel：<a href="#执行命令安装套件-ncurses-devel" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-libncurses5-dev-1">#apt-get install libncurses5-dev<a href="#apt-get-install-libncurses5-dev-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="在之后出现的对话框中选择-save-再-exit-退出">在之后出现的对话框中选择 save，再 exit 退出。<a href="#在之后出现的对话框中选择-save-再-exit-退出" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="4-编译内核">4.编译内核<a href="#4-编译内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="执行命令-可使用-make-j4-4核cpu-来加快编译速度">执行命令(可使用 make -j4 (4核CPU)来加快编译速度)：<a href="#执行命令-可使用-make-j4-4核cpu-来加快编译速度" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-j4">#make -j4<a href="#make-j4" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="内核配置完成后-执行-make-命令开始编译内核-如果编译成功-则生成-linux-启动映像文件-bzimage-位于-arch-x86-64-boot-bzimage中">内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于./arch/x86_64/boot/bzImage中)。<a href="#内核配置完成后-执行-make-命令开始编译内核-如果编译成功-则生成-linux-启动映像文件-bzimage-位于-arch-x86-64-boot-bzimage中" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="编译过程中-可能会出现一些错误-通常都是因为缺少某个库-一般根据相应的错误提示-安装相应的包即可-然后重新编译">编译过程中，可能会出现一些错误，通常都是因为缺少某个库，一般根据相应的错误提示，安装相应的包即可，然后重新编译：<a href="#编译过程中-可能会出现一些错误-通常都是因为缺少某个库-一般根据相应的错误提示-安装相应的包即可-然后重新编译" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="1-缺少-openssl">(1).缺少 openssl：<a href="#1-缺少-openssl" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-libssl-dev">#apt-get install libssl-dev<a href="#apt-get-install-libssl-dev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-缺少-bison">(2).缺少 bison：<a href="#2-缺少-bison" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-bison">#apt-get install bison<a href="#apt-get-install-bison" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="3-缺少-flex">(3).缺少 flex :<a href="#3-缺少-flex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-flex">#apt-get install flex<a href="#apt-get-install-flex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="5-编译模块">5.编译模块<a href="#5-编译模块" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="执行命令-1">执行命令：<a href="#执行命令-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-modules">#make modules<a href="#make-modules" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="6-安装内核">6.安装内核<a href="#6-安装内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="1-安装模块">(1).安装模块：<a href="#1-安装模块" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-modules-install">#make modules_install<a href="#make-modules-install" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-安装内核">(2).安装内核：<a href="#2-安装内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="make-install">#make install<a href="#make-install" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="7-配置-grub-引导程序">7.配置 grub 引导程序<a href="#7-配置-grub-引导程序" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="执行命令-2">执行命令：<a href="#执行命令-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="update-grub2">#update-grub2，<a href="#update-grub2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="该命令会自动修改-grub">该命令会自动修改 grub。<a href="#该命令会自动修改-grub" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<h3 id="8-重启系统">8.重启系统<a href="#8-重启系统" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<blockquote>
+<h5 id="执行命令-reboot-使用新内核启动-linux">执行命令： #reboot  使用新内核启动 linux<a href="#执行命令-reboot-使用新内核启动-linux" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="启动完成后进入终端执行命令-uname-a-查看内核版本">启动完成后进入终端执行命令：#uname -a 查看内核版本<a href="#启动完成后进入终端执行命令-uname-a-查看内核版本" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://forever-crazy.github.io/tags/demo">demo</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>116 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-18 17:00 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://forever-crazy.github.io/posts/week-2-%E7%AC%94%E8%AE%B0/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Week-2 一些基础的numpy笔记</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2020 <a href="https://forever-crazy.github.io">Jiujiu</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://forever-crazy.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://forever-crazy.github.io/js/bundle.min.490e43e5af6db5906f28afa49a4e16bf9f626b758e3fca92f146b870eb94bb37.js" integrity="sha256-SQ5D5a9ttZBvKK+kmk4Wv59ia3WOP8qS8Ua4cOuUuzc=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

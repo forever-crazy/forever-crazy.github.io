@@ -6,10 +6,19 @@
     <description>Recent content on Hugo Hermit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Apr 2020 21:16:17 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 18 Apr 2020 17:00:18 +0800</lastBuildDate>
     
 	<atom:link href="https://forever-crazy.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Week-3 Linux内核编译</title>
+      <link>https://forever-crazy.github.io/posts/week-3/</link>
+      <pubDate>Sat, 18 Apr 2020 17:00:18 +0800</pubDate>
+      
+      <guid>https://forever-crazy.github.io/posts/week-3/</guid>
+      <description>1.解压内核源码文件  在Linux官网下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。 进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩： （1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。 （2）tar –xvf linux-4.4.218.tar 注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。  2.清除残留的.config和.o文件  在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令： #make mrproper 这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是： #apt-get install libncurses5-dev 安装完缺少的包之后再次执行命令： #make mrproper  3.配置内核  执行命令： #make menuconfig 运行该命令过程中，可能会出现错误信息： fatal error: curses.h: No such file or directory。 执行命令安装套件 ncurses devel： #apt-get install libncurses5-dev 在之后出现的对话框中选择 save，再 exit 退出。  4.编译内核  执行命令(可使用 make -j4 (4核CPU)来加快编译速度)： #make -j4 内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于.</description>
+    </item>
     
     <item>
       <title>Week-2 一些基础的numpy笔记</title>
