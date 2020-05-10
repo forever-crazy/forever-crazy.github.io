@@ -6,26 +6,29 @@
     <description>Recent content in demo on Hugo Hermit</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 18 Apr 2020 17:00:18 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 07 May 2020 11:07:58 +0800</lastBuildDate>
     
 	<atom:link href="https://forever-crazy.github.io/tags/demo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Week-3 Linux内核编译</title>
-      <link>https://forever-crazy.github.io/posts/week-3/</link>
-      <pubDate>Sat, 18 Apr 2020 17:00:18 +0800</pubDate>
+      <title>Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用</title>
+      <link>https://forever-crazy.github.io/posts/week-3~5/</link>
+      <pubDate>Thu, 07 May 2020 11:07:58 +0800</pubDate>
       
-      <guid>https://forever-crazy.github.io/posts/week-3/</guid>
-      <description>1.解压内核源码文件  在Linux官网下载内核源代码，在这里可以找到所有的内核版本，我下载的是4.4.218版本。我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。 进入虚拟机中，将下载的内核压缩文件复制到/home 或其他比较空闲的目录中，然后进入压缩文件所在子目录，分两步解压缩： （1）xz -d linux-4.4.218.tar.xz，大概执行 1 分钟左右，中间没有任何信息显示。 （2）tar –xvf linux-4.4.218.tar 注意：由于编译过程中会生成很多临时文件，所以要确保压缩文件所在子目录有足够的空闲空间，最好能有 15-20GB，我在建立虚拟机时预留了 40GB 磁盘空间。  2.清除残留的.config和.o文件  在开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.4.218 目录， 执行以下命令： #make mrproper 这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是： #apt-get install libncurses5-dev 安装完缺少的包之后再次执行命令： #make mrproper  3.配置内核  执行命令： #make menuconfig 运行该命令过程中，可能会出现错误信息： fatal error: curses.h: No such file or directory。 执行命令安装套件 ncurses devel： #apt-get install libncurses5-dev 在之后出现的对话框中选择 save，再 exit 退出。  4.编译内核  执行命令(可使用 make -j4 (4核CPU)来加快编译速度)： #make -j4 内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于.</description>
+      <guid>https://forever-crazy.github.io/posts/week-3~5/</guid>
+      <description>最近一直在折腾操作系统实验一的作业，前前后后我花了两个多星期在这作业上，踩了不少坑。不过最后好歹是搞成功了，也算是有点收获，刚好在这里记录一下。
+​ 作业内容要求如下：
+ (1).添加一个系统调用，实现对指定进程的 nice 值的修改或读取功能，并返回进程最新的 nice 值及优先级 prio。建议调用原型为： int mysetnice(pid_t pid, int flag, int nicevalue, void __user * prio, void __user * nice); 参数含义：  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;pid：进程 ID。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;flag：若值为 0，表示读取 nice 值；若值为 1，表示修改 nice 值。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nicevalue：为指定进程设置的新 nice 值。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;prio、nice：指向进程当前优先级 prio 及 nice 值。返回值：系统调用成功时返回 0，失败时返回错误码 EFAULT。 (2).写一个简单的应用程序测试 (1) 中添加的系统调用。 (3).若程序中调用了 Linux 的内核函数，要求深入阅读相关函数源码。  首先要搞清楚这几个概念：
+(1).prio：prio值表示进程的优先级，进程prio值越小则优先级越高。 (2).nice：nice值表示进程优先级的修正数值，范围是从-20到19。正值表示调整到低优先级，负值表示调整到高优先级，值为零则表示不会调整该进程的优先级。 (3).pid_t： typedef __kernel_pid_t pid_t; typedef int __kernel_pid_t; 可以看出pid_t其实就是int类型，使用pid_t是为了可移植性好一些，因为在不同的平台上可能会有： typedef int pid_t; 或： typedef long pid_t; (4).</description>
     </item>
     
     <item>
       <title>Week-2 一些基础的numpy笔记</title>
-      <link>https://forever-crazy.github.io/posts/week-2-%E7%AC%94%E8%AE%B0/</link>
+      <link>https://forever-crazy.github.io/posts/week-2/</link>
       <pubDate>Thu, 09 Apr 2020 21:16:17 +0800</pubDate>
       
-      <guid>https://forever-crazy.github.io/posts/week-2-%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://forever-crazy.github.io/posts/week-2/</guid>
       <description>import numpy as np #访问数组元素 x = np.arange(100).reshape(10, 10) y = x[[1, 2, 3]] z = x[[1, 2, 3, 4], [3, 2, 1, 5]] # y:[[10 11 12 13 14 15 16 17 18 19] # [20 21 22 23 24 25 26 27 28 29] # [30 31 32 33 34 35 36 37 38 39]] # z:[13 22 31 45] #随机函数 a = np.random.randn(2, 3) #生成指定维度的标准正态分布(以0为均值,1为标准差)的数据 b = np.</description>
     </item>
     

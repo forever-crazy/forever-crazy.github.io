@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+
+<meta itemprop="name" content="Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用">
+<meta itemprop="description" content="最近一直在折腾操作系统实验一的作业，前前后后我花了两个多星期在这作业上，踩了不少坑。不过最后好歹是搞成功了，也算是有点收获，刚好在这里记录一下。
+​ 作业内容要求如下：
+ (1).添加一个系统调用，实现对指定进程的 nice 值的修改或读取功能，并返回进程最新的 nice 值及优先级 prio。建议调用原型为： int mysetnice(pid_t pid, int flag, int nicevalue, void __user * prio, void __user * nice); 参数含义：  &nbsp;&nbsp;&nbsp;&nbsp;pid：进程 ID。&nbsp;&nbsp;&nbsp;&nbsp;flag：若值为 0，表示读取 nice 值；若值为 1，表示修改 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;nicevalue：为指定进程设置的新 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;prio、nice：指向进程当前优先级 prio 及 nice 值。返回值：系统调用成功时返回 0，失败时返回错误码 EFAULT。 (2).写一个简单的应用程序测试 (1) 中添加的系统调用。 (3).若程序中调用了 Linux 的内核函数，要求深入阅读相关函数源码。  首先要搞清楚这几个概念：
+(1).prio：prio值表示进程的优先级，进程prio值越小则优先级越高。 (2).nice：nice值表示进程优先级的修正数值，范围是从-20到19。正值表示调整到低优先级，负值表示调整到高优先级，值为零则表示不会调整该进程的优先级。 (3).pid_t： typedef __kernel_pid_t pid_t; typedef int __kernel_pid_t; 可以看出pid_t其实就是int类型，使用pid_t是为了可移植性好一些，因为在不同的平台上可能会有： typedef int pid_t; 或： typedef long pid_t; (4).">
+
+
+<meta itemprop="datePublished" content="2020-05-07T11:07:58&#43;08:00" />
+<meta itemprop="dateModified" content="2020-05-07T11:07:58&#43;08:00" />
+<meta itemprop="wordCount" content="358">
+
+
+
+<meta itemprop="keywords" content="demo," />
+<meta property="og:title" content="Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用" />
+<meta property="og:description" content="最近一直在折腾操作系统实验一的作业，前前后后我花了两个多星期在这作业上，踩了不少坑。不过最后好歹是搞成功了，也算是有点收获，刚好在这里记录一下。
+​ 作业内容要求如下：
+ (1).添加一个系统调用，实现对指定进程的 nice 值的修改或读取功能，并返回进程最新的 nice 值及优先级 prio。建议调用原型为： int mysetnice(pid_t pid, int flag, int nicevalue, void __user * prio, void __user * nice); 参数含义：  &nbsp;&nbsp;&nbsp;&nbsp;pid：进程 ID。&nbsp;&nbsp;&nbsp;&nbsp;flag：若值为 0，表示读取 nice 值；若值为 1，表示修改 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;nicevalue：为指定进程设置的新 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;prio、nice：指向进程当前优先级 prio 及 nice 值。返回值：系统调用成功时返回 0，失败时返回错误码 EFAULT。 (2).写一个简单的应用程序测试 (1) 中添加的系统调用。 (3).若程序中调用了 Linux 的内核函数，要求深入阅读相关函数源码。  首先要搞清楚这几个概念：
+(1).prio：prio值表示进程的优先级，进程prio值越小则优先级越高。 (2).nice：nice值表示进程优先级的修正数值，范围是从-20到19。正值表示调整到低优先级，负值表示调整到高优先级，值为零则表示不会调整该进程的优先级。 (3).pid_t： typedef __kernel_pid_t pid_t; typedef int __kernel_pid_t; 可以看出pid_t其实就是int类型，使用pid_t是为了可移植性好一些，因为在不同的平台上可能会有： typedef int pid_t; 或： typedef long pid_t; (4)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://forever-crazy.github.io/posts/week-3~5/" />
+<meta property="article:published_time" content="2020-05-07T11:07:58&#43;08:00"/>
+<meta property="article:modified_time" content="2020-05-07T11:07:58&#43;08:00"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用"/>
+<meta name="twitter:description" content="最近一直在折腾操作系统实验一的作业，前前后后我花了两个多星期在这作业上，踩了不少坑。不过最后好歹是搞成功了，也算是有点收获，刚好在这里记录一下。
+​ 作业内容要求如下：
+ (1).添加一个系统调用，实现对指定进程的 nice 值的修改或读取功能，并返回进程最新的 nice 值及优先级 prio。建议调用原型为： int mysetnice(pid_t pid, int flag, int nicevalue, void __user * prio, void __user * nice); 参数含义：  &nbsp;&nbsp;&nbsp;&nbsp;pid：进程 ID。&nbsp;&nbsp;&nbsp;&nbsp;flag：若值为 0，表示读取 nice 值；若值为 1，表示修改 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;nicevalue：为指定进程设置的新 nice 值。 &nbsp;&nbsp;&nbsp;&nbsp;prio、nice：指向进程当前优先级 prio 及 nice 值。返回值：系统调用成功时返回 0，失败时返回错误码 EFAULT。 (2).写一个简单的应用程序测试 (1) 中添加的系统调用。 (3).若程序中调用了 Linux 的内核函数，要求深入阅读相关函数源码。  首先要搞清楚这几个概念：
+(1).prio：prio值表示进程的优先级，进程prio值越小则优先级越高。 (2).nice：nice值表示进程优先级的修正数值，范围是从-20到19。正值表示调整到低优先级，负值表示调整到高优先级，值为零则表示不会调整该进程的优先级。 (3).pid_t： typedef __kernel_pid_t pid_t; typedef int __kernel_pid_t; 可以看出pid_t其实就是int类型，使用pid_t是为了可移植性好一些，因为在不同的平台上可能会有： typedef int pid_t; 或： typedef long pid_t; (4)."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用</title>
+	<link rel="stylesheet" href="https://forever-crazy.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://forever-crazy.github.io">Hugo Hermit</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://forever-crazy.github.io/posts/">Posts</a>
+				<a href="https://forever-crazy.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/forever-crazy/forever-crazy.github.io" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://forever-crazy.github.io/posts/">Posts</a></li>
+			<li><a href="https://forever-crazy.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>May 7, 2020</span></div>
+				<h1>Week-3~5 操作系统实验一：Linux 内核编译及添加系统调用</h1>
+			</header>
+			<div class="content">
+				
+
+<p>最近一直在折腾操作系统实验一的作业，前前后后我花了两个多星期在这作业上，踩了不少坑。不过最后好歹是搞成功了，也算是有点收获，刚好在这里记录一下。</p>
+
+<p>​    作业内容要求如下：</p>
+
+<blockquote>
+<h5 id="1-添加一个系统调用-实现对指定进程的-nice-值的修改或读取功能-并返回进程最新的-nice-值及优先级-prio-br-建议调用原型为-br-int-mysetnice-pid-t-pid-int-flag-int-nicevalue-void-user-prio-void-user-nice-br-参数含义-br-nbsp-nbsp-nbsp-nbsp-pid-进程-id-br-nbsp-nbsp-nbsp-nbsp-flag-若值为-0-表示读取-nice-值-若值为-1-表示修改-nice-值-br-nbsp-nbsp-nbsp-nbsp-nicevalue-为指定进程设置的新-nice-值-br-nbsp-nbsp-nbsp-nbsp-prio-nice-指向进程当前优先级-prio-及-nice-值-br-返回值-系统调用成功时返回-0-失败时返回错误码-efault">(1).添加一个系统调用，实现对指定进程的 nice 值的修改或读取功能，并返回进程最新的 nice 值及优先级 prio。<br/>建议调用原型为：<br/> int mysetnice(pid_t pid, int flag, int nicevalue,  void __user * prio, void __user * nice);<br/> 参数含义： <br/> &nbsp;&nbsp;&nbsp;&nbsp;pid：进程 ID。<br/>&nbsp;&nbsp;&nbsp;&nbsp;flag：若值为 0，表示读取 nice 值；若值为 1，表示修改 nice 值。<br/> &nbsp;&nbsp;&nbsp;&nbsp;nicevalue：为指定进程设置的新 nice 值。 <br/>&nbsp;&nbsp;&nbsp;&nbsp;prio、nice：指向进程当前优先级 prio 及 nice 值。<br/>返回值：系统调用成功时返回 0，失败时返回错误码 EFAULT。<a href="#1-添加一个系统调用-实现对指定进程的-nice-值的修改或读取功能-并返回进程最新的-nice-值及优先级-prio-br-建议调用原型为-br-int-mysetnice-pid-t-pid-int-flag-int-nicevalue-void-user-prio-void-user-nice-br-参数含义-br-nbsp-nbsp-nbsp-nbsp-pid-进程-id-br-nbsp-nbsp-nbsp-nbsp-flag-若值为-0-表示读取-nice-值-若值为-1-表示修改-nice-值-br-nbsp-nbsp-nbsp-nbsp-nicevalue-为指定进程设置的新-nice-值-br-nbsp-nbsp-nbsp-nbsp-prio-nice-指向进程当前优先级-prio-及-nice-值-br-返回值-系统调用成功时返回-0-失败时返回错误码-efault" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-写一个简单的应用程序测试-1-中添加的系统调用">(2).写一个简单的应用程序测试 (1) 中添加的系统调用。<a href="#2-写一个简单的应用程序测试-1-中添加的系统调用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="3-若程序中调用了-linux-的内核函数-要求深入阅读相关函数源码">(3).若程序中调用了 Linux 的内核函数，要求深入阅读相关函数源码。<a href="#3-若程序中调用了-linux-的内核函数-要求深入阅读相关函数源码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+</blockquote>
+
+<p>首先要搞清楚这几个概念：</p>
+
+<h5 id="1-prio-br-prio值表示进程的优先级-进程prio值越小则优先级越高">(1).prio：<br/>prio值表示进程的优先级，进程prio值越小则优先级越高。<a href="#1-prio-br-prio值表示进程的优先级-进程prio值越小则优先级越高" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-nice-br-nice值表示进程优先级的修正数值-范围是从-20到19-正值表示调整到低优先级-负值表示调整到高优先级-值为零则表示不会调整该进程的优先级">(2).nice：<br/>nice值表示进程优先级的修正数值，范围是从-20到19。正值表示调整到低优先级，负值表示调整到高优先级，值为零则表示不会调整该进程的优先级。<a href="#2-nice-br-nice值表示进程优先级的修正数值-范围是从-20到19-正值表示调整到低优先级-负值表示调整到高优先级-值为零则表示不会调整该进程的优先级" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="3-pid-t">(3).pid_t：<a href="#3-pid-t" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="n">__kernel_pid_t</span>  <span class="n">pid_t</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="kt">int</span> <span class="n">__kernel_pid_t</span><span class="p">;</span></code></pre></div>
+<h5 id="可以看出pid-t其实就是int类型-使用pid-t是为了可移植性好一些-因为在不同的平台上可能会有">可以看出pid_t其实就是int类型，使用pid_t是为了可移植性好一些，因为在不同的平台上可能会有：<a href="#可以看出pid-t其实就是int类型-使用pid-t是为了可移植性好一些-因为在不同的平台上可能会有" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="kt">int</span> <span class="n">pid_t</span><span class="p">;</span></code></pre></div>
+<h5 id="或">或：<a href="#或" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="kt">long</span> <span class="n">pid_t</span><span class="p">;</span></code></pre></div>
+<h5 id="4-void-user-br-void-user-arg中的arg是一个用户空间的地址-而用户空间和内核空间之间不能简单地使用指针进行传递-故linux内核提供了多个函数和宏用于内核空间和用户空间传递数据-例如copy-from-user-copy-to-user-get-user-put-user等">(4).void __user*：<br/>(void __user*)arg中的arg是一个用户空间的地址，而用户空间和内核空间之间不能简单地使用指针进行传递，故linux内核提供了多个函数和宏用于内核空间和用户空间传递数据，例如copy_from_user，copy_to_user，get_user，put_user等。<a href="#4-void-user-br-void-user-arg中的arg是一个用户空间的地址-而用户空间和内核空间之间不能简单地使用指针进行传递-故linux内核提供了多个函数和宏用于内核空间和用户空间传递数据-例如copy-from-user-copy-to-user-get-user-put-user等" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>大概了解完后就是正式开始了。</p>
+
+<h3 id="一-下载和解压缩内核源代码文件">一.下载和解压缩内核源代码文件<a href="#一-下载和解压缩内核源代码文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>​    首先在<a href="https://www.kernel.org/">Linux官网</a>下载内核源代码，在这里可以找到所有的内核版本。我下载的是4.19.120版本的，个人感觉下载的内核版本最好要高于虚拟机内核版本，之前下载4.4.218版本，莫名其妙碰到好多坑，一换4.19.120立马就好了。</p>
+
+<p>​    由于我虚拟机下载贼慢，所以我是先在Windows上下载好后通过虚拟机共享文件夹传到虚拟机中(传过来的共享文件会在/mnt/hgfs目录下)。</p>
+
+<p>进入虚拟机后，将传过来的压缩文件复制到/usr/src目录下，分两步解压缩：</p>
+
+<h5 id="1-xz-d-linux-4-19-120-tar-xz">（1）xz -d linux-4.19.120.tar.xz<a href="#1-xz-d-linux-4-19-120-tar-xz" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-tar-xvf-linux-4-19-120-tar">（2）tar –xvf linux-4.19.120.tar<a href="#2-tar-xvf-linux-4-19-120-tar" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>注意：由于编译过程中会生成很多临时文件，所以要确保有足够的空闲空间，最好起码能有 20GB，我在建立虚拟机时预留了 40GB 磁盘空间(后来又扩展到60G&hellip;)。</p>
+
+<h3 id="二-清除残留的-config和-o文件">二.清除残留的.config和.o文件<a href="#二-清除残留的-config和-o文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>每次开始完全重新编译之前，需要删除所有的编译生成文件(.o文件)、内核配置文件(.config文件)和各种备份文件。后续如果编译过程中出现错误，再次开始完全重新编译之前也需要如此清理。进入 linux-4.19.120 目录， 执行以下命令：</p>
+
+<h5 id="make-mrproper">#make mrproper<a href="#make-mrproper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>这里可能会提醒安装 ncurses 包，在 Ubuntu 中 ncurses 库的名字是 libncurses5-dev，所以安装命令是：</p>
+
+<h5 id="apt-get-install-libncurses5-dev">#apt-get install libncurses5-dev<a href="#apt-get-install-libncurses5-dev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>安装完缺少的包之后再次执行命令：</p>
+
+<h5 id="make-mrproper-1">#make mrproper<a href="#make-mrproper-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><br/><br/></p>
+
+<h3 id="三-添加系统调用">三.添加系统调用<a href="#三-添加系统调用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<h4 id="1-分配系统调用号-修改系统调用表">1. 分配系统调用号，修改系统调用表<a href="#1-分配系统调用号-修改系统调用表" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>查看系统调用表(arch/x86/entry/syscalls/syscall_64.tbl)，每个系统调用在表中占一表项，其格式为：  &lt;系统调用号&gt; <commom/64/x32> &lt;系统调用名&gt; &lt;服务例程入口地址&gt;</p>
+
+<p>选择一个未使用的系统调用号进行分配，比如当前系统使用到 334 号，则新添加的系统调用可使用 335 号。确定调用号后，在 syscall_64.tbl 文件中为新调用添加一条记录，如图所示：</p>
+
+<p><img src="file:///F:/hermit/data/系统调用表.jpg" alt="系统调用表" /></p>
+
+<h4 id="2-申明系统调用服务例程原型">2.申明系统调用服务例程原型<a href="#2-申明系统调用服务例程原型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>查看Linux 系统调用服务例程的原型声明(include/linux/syscalls.h)，并在文件末尾添加相应原型声明，如图所示：</p>
+
+<p><img src="F:hermitdata系统调用服务例程原型.jpg" alt="系统调用服务例程原型" /></p>
+
+<h4 id="3-实现系统调用服务例程">3.实现系统调用服务例程<a href="#3-实现系统调用服务例程" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>为新调用mysetnice编写服务例程sys_mysetnice，添加在 sys.c 文件(kernel/sys.c)中，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">SYSCALL_DEFINE5</span><span class="p">(</span><span class="n">mysetnice</span><span class="p">,</span>  <span class="n">pid_t</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="n">nicevalue</span><span class="p">,</span> <span class="kt">void</span> <span class="n">__user</span><span class="o">*</span><span class="p">,</span> <span class="n">prio</span><span class="p">,</span> <span class="kt">void</span> <span class="n">__user</span><span class="o">*</span><span class="p">,</span> <span class="n">nice</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">struct</span> <span class="n">pid</span> <span class="o">*</span><span class="n">id</span><span class="p">;</span>    	    <span class="c1">//进程标识符结构体
+</span><span class="c1"></span>	<span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">pcb</span><span class="p">;</span>    <span class="c1">//进程结构体
+</span><span class="c1"></span>
+	<span class="kt">int</span> <span class="n">new_nice</span><span class="p">,</span> <span class="n">new_prio</span><span class="p">;</span>
+
+	<span class="n">id</span> <span class="o">=</span> <span class="n">find_get_pid</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span>     <span class="c1">//根据进程ID号获得进程标识符
+</span><span class="c1"></span>	<span class="n">pcb</span> <span class="o">=</span> <span class="n">pid_task</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">PIDTYPE_PID</span><span class="p">);</span>  
+	<span class="c1">//根据进程标识符获得指定进程，PIDTYPE_PID为进程类型的PID，除此之外还有线程，会话等类型的PID
+</span><span class="c1"></span>	
+	<span class="n">new_nice</span> <span class="o">=</span> <span class="n">task_nice</span><span class="p">(</span><span class="n">pcb</span><span class="p">);</span>    <span class="c1">//获得该进程的nice值
+</span><span class="c1"></span>	<span class="n">new_prio</span> <span class="o">=</span> <span class="n">task_prio</span><span class="p">(</span><span class="n">pcb</span><span class="p">);</span>    <span class="c1">//获得该进程的prio值
+</span><span class="c1"></span>
+	<span class="k">if</span><span class="p">(</span><span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>      <span class="c1">//flag为0的情况
+</span><span class="c1"></span>	<span class="p">{</span>
+		<span class="n">copy_to_user</span><span class="p">(</span><span class="n">nice</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_nice</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">new_nice</span><span class="p">));</span>
+		<span class="n">copy_to_user</span><span class="p">(</span><span class="n">prio</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_prio</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">new_prio</span><span class="p">));</span>
+		<span class="c1">//将数据从内核空间拷贝到用户空间中	
+</span><span class="c1"></span>		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>       <span class="c1">//flag为1的情况
+</span><span class="c1"></span>	<span class="p">{</span>
+		<span class="n">set_user_nice</span><span class="p">(</span><span class="n">pcb</span><span class="p">,</span> <span class="n">nicevalue</span><span class="p">);</span>
+		<span class="c1">//设置该进程的nice值为nicevalue
+</span><span class="c1"></span>		
+		<span class="n">new_nice</span> <span class="o">=</span> <span class="n">task_nice</span><span class="p">(</span><span class="n">pcb</span><span class="p">);</span>
+		<span class="n">new_prio</span> <span class="o">=</span> <span class="n">task_prio</span><span class="p">(</span><span class="n">pcb</span><span class="p">);</span>
+ 		<span class="c1">//由于进程的nice值被修改了，故需要重新获取进程的nice值和prio值
+</span><span class="c1"></span>		
+		<span class="n">copy_to_user</span><span class="p">(</span><span class="n">nice</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_nice</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">new_nice</span><span class="p">));</span>
+		<span class="n">copy_to_user</span><span class="p">(</span><span class="n">prio</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_prio</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">new_prio</span><span class="p">));</span>
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>	
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">EFAULT</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p><br/><br/></p>
+
+<h3 id="四-配置和编译内核">四.配置和编译内核<a href="#四-配置和编译内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>执行命令：</p>
+
+<h5 id="make-menuconfig">#make menuconfig<a href="#make-menuconfig" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>运行该命令过程中，可能会出现错误信息：fatal error: curses.h: No such file or directory。</p>
+
+<p>执行命令安装套件 ncurses devel：</p>
+
+<h5 id="apt-get-install-libncurses5-dev-1">#apt-get install libncurses5-dev<a href="#apt-get-install-libncurses5-dev-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>在之后出现的对话框中选择 save 保存配置信息，文件名采用默认的.config，再选择 exit 退出。</p>
+
+<p>编译内核执行命令(可使用 make -j4 (4核CPU)或make -j2(2核CPU)来加快编译速度)：</p>
+
+<h5 id="make-j4">#make -j4<a href="#make-j4" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>内核配置完成后，执行 make 命令开始编译内核，如果编译成功，则生成 Linux 启动映像文件 bzImage(位于./arch/x86_64/boot/bzImage中)。</p>
+
+<p>编译过程中，可能会出现一些错误，通常都是因为缺少某个库，一般根据相应的错误提示，安装相应的包即可，然后重新编译：</p>
+
+<h5 id="1-缺少-openssl">(1).缺少 openssl：<a href="#1-缺少-openssl" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-libssl-dev">#apt-get install libssl-dev<a href="#apt-get-install-libssl-dev" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="2-缺少-bison">(2).缺少 bison：<a href="#2-缺少-bison" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-bison">#apt-get install bison<a href="#apt-get-install-bison" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="3-缺少-flex">(3).缺少 flex :<a href="#3-缺少-flex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<h5 id="apt-get-install-flex">#apt-get install flex<a href="#apt-get-install-flex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>内核编译一般都需要挺长时间(我花了将近三个小时)，所以需要有耐心，可以在编译期间可以去做一些其他的事。</p>
+
+<p><br/><br/></p>
+
+<h3 id="五-编译模块和安装内核">五.编译模块和安装内核<a href="#五-编译模块和安装内核" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>依次执行以下命令：</p>
+
+<p>编译模块：</p>
+
+<h5 id="make-modules">#make modules<a href="#make-modules" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>安装模块：</p>
+
+<h5 id="make-modules-install">#make modules_install<a href="#make-modules-install" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>编译和安装模块也花了不少时间。</p>
+
+<p>再安装内核：</p>
+
+<h5 id="make-install">#make install<a href="#make-install" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>配置 grub 引导程序(该命令会自动修改 grub)：</p>
+
+<h5 id="update-grub2">#update-grub2<a href="#update-grub2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><br/><br/></p>
+
+<h3 id="六-重启系统">六.重启系统<a href="#六-重启系统" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>重启后系统就会自动启动新的内核(不过似乎是要安装的内核版本高于虚拟机的内核版本才会自动启动新的内核)，如果重启后内核还是之前的内核，可以采取以下操作：</p>
+
+<p>执行命令：</p>
+
+<h5 id="vim-etc-default-grub">#vim /etc/default/grub<a href="#vim-etc-default-grub" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>将GRUB_TIMEOUT_STYLE = HIDDEN注释，并将GRUB_TIMEOUT的值(也就是启动选择界面会出现多少秒)设置为一个较大的值，这里改为了10。</p>
+
+<p><img src="F:hermitdatagrub.jpg" alt="配置grub" /></p>
+
+<p>然后重启时就可以在启动界面选择需要启动的内核，启动完成后进入终端查看内核版本：</p>
+
+<h5 id="uname-a">#uname -a<a href="#uname-a" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><img src="F:hermitdata内核版本.jpg" alt="内核版本" /></p>
+
+<p><br/><br/></p>
+
+<h3 id="七-编写程序测试系统调用">七.编写程序测试系统调用<a href="#七-编写程序测试系统调用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>编写的程序代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span><span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span><span class="cpf">&lt;sys/syscall.h&gt;</span><span class="cp">
+</span><span class="cp">#define __NR_MYSETNICE 335
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">,</span> <span class="n">nicevalue1</span><span class="p">,</span> <span class="n">nicevalue2</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">nice</span><span class="p">,</span> <span class="n">prio</span><span class="p">;</span>
+	<span class="n">pid_t</span> <span class="n">id</span><span class="p">;</span>
+
+	<span class="n">id</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+	
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;分别输入第一次的flag值和nicevalue值：&#34;</span><span class="p">);</span>
+	<span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d %d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">flag1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nicevalue1</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;分别输入第二次的flag值和nicevalue值：&#34;</span><span class="p">);</span>
+	<span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d %d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">flag2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nicevalue2</span><span class="p">);</span>
+	
+	<span class="n">syscall</span><span class="p">(</span><span class="n">__NR_MYSETNICE</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">flag1</span><span class="p">,</span> <span class="n">nicevalue1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">prio</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nice</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;第一次: prio:%d, nice:%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">prio</span><span class="p">,</span> <span class="n">nice</span><span class="p">);</span>
+
+	<span class="n">syscall</span><span class="p">(</span><span class="n">__NR_MYSETNICE</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">flag2</span><span class="p">,</span> <span class="n">nicevalue2</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">prio</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">nice</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;第二次: prio:%d, nice:%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">prio</span><span class="p">,</span> <span class="n">nice</span><span class="p">);</span>
+	
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<p>运行结果如下：</p>
+
+<p><img src="F:hermitdata测试程序运行结果.jpg" alt="测试程序运行结果" /></p>
+
+<p>用户空间的进程初始化时默认是prio=20，nice=0，并且prio和nice有对应关系：prio = nice + 20。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://forever-crazy.github.io/tags/demo">demo</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>358 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-05-07 11:07 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://forever-crazy.github.io/posts/week-2/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Week-2 一些基础的numpy笔记</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2020 <a href="https://forever-crazy.github.io">Jiujiu</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://forever-crazy.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://forever-crazy.github.io/js/bundle.min.490e43e5af6db5906f28afa49a4e16bf9f626b758e3fca92f146b870eb94bb37.js" integrity="sha256-SQ5D5a9ttZBvKK+kmk4Wv59ia3WOP8qS8Ua4cOuUuzc=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>
